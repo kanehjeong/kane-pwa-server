@@ -2,7 +2,7 @@
 
 module.exports = (req, res, next) => {
 
-    const origins = ['http://localhost:3000', 'http://localhost:4201'];
+    const origins = ['http://localhost:3000', 'http://localhost:4201', 'https://kane-pwa.firebaseapp.com'];
 
     origins.forEach((origin) => res.setHeader('Access-Control-Allow-Origin', origin));
 
