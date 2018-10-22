@@ -1,4 +1,5 @@
-if (process.env.NODE_ENV !== 'production') {
+const isProduction = process.env.NODE_ENV === 'production';
+if (!isProduction) {
     require('dotenv').config();
 }
 const express = require('express');
@@ -8,7 +9,10 @@ const logger = require('morgan');
 
 // DB INIT
 const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGODB_URI, {
+const connectionString = isProduction
+    ? process.env.MONGODB_URI
+    : `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds125031.mlab.com:25031/heroku_v3ddrvsm`;
+mongoose.connect(connectionString, {
     useNewUrlParser: true
 });
 const db = mongoose.connection;
