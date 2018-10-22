@@ -23,7 +23,7 @@ router.get('/numbers', (req, res) => {
     res.json(randomNumbers);
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/notification', async (req, res, next) => {
 
     const allSubscriptions = await subscriptionService.getSubscriptions();
 
@@ -32,7 +32,7 @@ router.post('/', async (req, res, next) => {
     const notificationPayload = {
         "notification": {
             "title": "PWA Notification",
-            "body": "You got a notification!",
+            "body": req.body.message,
             "icon": "assets/main-page-logo-small-hat.png",
             "vibrate": [100, 50, 100],
             "data": {
@@ -51,7 +51,7 @@ router.post('/', async (req, res, next) => {
         res.status(200).json({message: 'Newsletter sent successfully.'});
     } catch (err) {
         console.error("Error sending notification, reason: ", err);
-        res.sendStatus(500);
+        res.status(500).send(err);
     }
 });
 
@@ -61,7 +61,7 @@ router.post('/subscription', async (req, res, next) => {
         res.status(200).send();
     } catch (err) {
         console.error(err);
-        res.status(500).send('There was a problem adding the subscription.');
+        res.status(500).send(err);
     }
 });
 
