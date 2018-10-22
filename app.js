@@ -6,8 +6,7 @@ const logger = require('morgan');
 
 // DB INIT
 const mongoose = require('mongoose');
-const user = process.env.DB_USER;
-mongoose.connect(`mongodb://${user}:${process.env.DB_PASSWORD}@ds137703.mlab.com:37703/heroku_rlh2zbc8`, {
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true
 });
 const db = mongoose.connection;

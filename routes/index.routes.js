@@ -60,7 +60,7 @@ router.post('/subscription', async (req, res, next) => {
         await subscriptionService.addSubscription(req.body);
         res.status(200).send();
     } catch (err) {
-        console.log(err);
+        console.error(err);
         res.status(500).send('There was a problem adding the subscription.');
     }
 });
