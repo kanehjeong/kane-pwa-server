@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const newsletterService = require('./newsletter.service');
+const subscriptionService = require('./subscription.service');
 const webpush = require('web-push');
 
 const vapidKeys = {
@@ -18,16 +18,21 @@ router.get('/ping', (req, res) => {
     res.status(200).send('pong');
 });
 
+router.get('/numbers', (req, res) => {
+    const randomNumbers = Array.from({length: 5}, () => Math.floor(Math.random() * 40));
+    res.json(randomNumbers);
+});
+
 router.post('/', async (req, res, next) => {
 
-    const allSubscriptions = newsletterService.getSubscriptions();
+    const allSubscriptions = await subscriptionService.getSubscriptions();
 
     console.log('Total subscriptions', allSubscriptions.length);
 
     const notificationPayload = {
         "notification": {
-            "title": "Angular News",
-            "body": "Newsletter Available!",
+            "title": "PWA Notification",
+            "body": "You got a notification!",
             "icon": "assets/main-page-logo-small-hat.png",
             "vibrate": [100, 50, 100],
             "data": {
@@ -36,7 +41,7 @@ router.post('/', async (req, res, next) => {
             },
             "actions": [{
                 "action": "explore",
-                "title": "Go to the site"
+                "title": "Go to the site (Not yet Supported)"
             }]
         }
     };
@@ -52,9 +57,10 @@ router.post('/', async (req, res, next) => {
 
 router.post('/subscription', async (req, res, next) => {
     try {
-        await newsletterService.addSubscription(req.body);
+        await subscriptionService.addSubscription(req.body);
         res.status(200).send();
     } catch (err) {
+        console.log(err);
         res.status(500).send('There was a problem adding the subscription.');
     }
 });
