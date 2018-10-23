@@ -26,22 +26,27 @@ router.get('/numbers', (req, res) => {
 router.post('/notification', async (req, res, next) => {
 
     const allSubscriptions = await subscriptionService.getSubscriptions();
-
+    if (!allSubscriptions) {
+        res.status(200).send({
+            message: 'No Subscriptions'
+        });
+        return;
+    }
     console.log('Total subscriptions', allSubscriptions.length);
 
     const notificationPayload = JSON.stringify({
-        "notification": {
-            "title": "PWA Notification",
-            "body": req.body.message,
-            "icon": "assets/main-page-logo-small-hat.png",
-            "vibrate": [100, 50, 100],
-            "data": {
-                "dateOfArrival": Date.now(),
-                "primaryKey": 1
+        'notification': {
+            'title': 'PWA Notification',
+            'body': req.body.message,
+            'icon': 'assets/main-page-logo-small-hat.png',
+            'vibrate': [100, 50, 100],
+            'data': {
+                'dateOfArrival': Date.now(),
+                'primaryKey': 1
             },
-            "actions": [{
-                "action": "explore",
-                "title": "Go to the site (Not yet Supported)"
+            'actions': [{
+                'action': 'explore',
+                'title': 'Go to the site (Not yet Supported)'
             }]
         }
     });
@@ -58,7 +63,7 @@ router.post('/notification', async (req, res, next) => {
         }));
         res.status(200).json({message: 'Newsletter sent successfully.'});
     } catch (err) {
-        console.error("Error sending notification, reason: ", err);
+        console.error('Error sending notification, reason: ', err);
         res.status(500).send(err);
     }
 });
