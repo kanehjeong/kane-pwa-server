@@ -47,7 +47,15 @@ router.post('/notification', async (req, res, next) => {
     };
 
     try {
-        await Promise.all(allSubscriptions.map(sub => webpush.sendNotification(sub, JSON.stringify(notificationPayload))));
+        await Promise.all(allSubscriptions.map(async (sub) => {
+            try {
+                await webpush.sendNotification(sub, JSON.stringify(notificationPayload))
+            } catch (err) {
+                if (err && err.statusCode === 410) {
+                    subscriptionService.deleteSubscription(sub);
+                }
+            }
+        }));
         res.status(200).json({message: 'Newsletter sent successfully.'});
     } catch (err) {
         console.error("Error sending notification, reason: ", err);

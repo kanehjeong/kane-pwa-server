@@ -22,7 +22,11 @@ class SubscriptionService {
     }
 
     async getSubscriptions() {
-        return await Subscription.find();
+        await Subscription.find();
+    }
+
+    async deleteSubscription(sub) {
+        await Subscription.deleteOne({ 'keys.auth': sub.keys.auth })
     }
 }
 
