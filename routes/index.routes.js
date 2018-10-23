@@ -29,7 +29,7 @@ router.post('/notification', async (req, res, next) => {
 
     console.log('Total subscriptions', allSubscriptions.length);
 
-    const notificationPayload = {
+    const notificationPayload = JSON.stringify({
         "notification": {
             "title": "PWA Notification",
             "body": req.body.message,
@@ -44,12 +44,12 @@ router.post('/notification', async (req, res, next) => {
                 "title": "Go to the site (Not yet Supported)"
             }]
         }
-    };
+    });
 
     try {
-        await Promise.all(allSubscriptions.map(async (sub) => {
+        await Promise.all(allSubscriptions.map(sub => {
             try {
-                await webpush.sendNotification(sub, JSON.stringify(notificationPayload))
+                webpush.sendNotification(sub, notificationPayload)
             } catch (err) {
                 if (err && err.statusCode === 410) {
                     subscriptionService.deleteSubscription(sub);
